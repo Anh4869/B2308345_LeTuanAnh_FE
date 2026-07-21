@@ -1,15 +1,13 @@
 <template>
   <div class="page row">
-    <div class="col-md-10">
+    <div class="col-md-6 offset-md-3">
       <InputSearch v-model="searchText" />
     </div>
-
-    <div class="mt-3 col-md-6">
+    <div class="mt-3 col-md-6 offset-md-3">
       <h4>
         Danh bạ
         <i class="fas fa-address-book"></i>
       </h4>
-
       <ContactList
         v-if="filteredContactsCount > 0"
         :contacts="filteredContacts"
@@ -30,14 +28,25 @@
           <i class="fas fa-trash"></i> Xóa tất cả
         </button>
       </div>
-    </div>
-    <div class="mt-3 col-md-12">
-      <div v-if="activeContact">
-        <h4>
-          Chi tiết Liên hệ
-          <i class="fas fa-address-card"></i>
-        </h4>
-        <ContactCard :contact="activeContact" />
+
+      <div class="mt-3 col-md-12">
+        <div v-if="activeContact">
+          <h4>
+            Chi tiết Liên hệ
+            <i class="fas fa-address-card"></i>
+          </h4>
+          <ContactCard :contact="activeContact" />
+          <router-link
+            :to="{
+              name: 'contact.edit',
+              params: { id: activeContact._id },
+            }"
+          >
+            <span class="mt-2 badge badge-warning">
+              <i class="fas fa-edit"></i> Hiệu chỉnh</span
+            >
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -55,6 +64,7 @@ export default {
     InputSearch,
     ContactList,
   },
+  // Phần logic script như data(), computed, methods... sẽ viết ở đây
   data() {
     return {
       contacts: [],
@@ -62,12 +72,14 @@ export default {
       searchText: "",
     };
   },
+
   watch: {
-    // Khi thay đổi từ khóa tìm kiếm, reset activeIndex về -1
+    // Giám sát thay đổi từ ô tìm kiếm và bỏ chọn liên hệ đang được chọn
     searchText() {
       this.activeIndex = -1;
     },
   },
+
   computed: {
     // Ghép các trường dữ liệu thành chuỗi để tiện lọc
     contactStrings() {
@@ -117,11 +129,11 @@ export default {
         }
       }
     },
-
     goToAddContact() {
       this.$router.push({ name: "contact-add" });
     },
   },
+
   mounted() {
     this.refreshList();
   },
